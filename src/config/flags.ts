@@ -13,16 +13,13 @@
  */
 
 export const FLAGS = {
-  // ─── Client-accessible (NEXT_PUBLIC_) ────────────────────────
-  rsvpOpen:          process.env.NEXT_PUBLIC_RSVP_OPEN          !== "false",
-  registryVisible:   process.env.NEXT_PUBLIC_REGISTRY_VISIBLE   !== "false",
-  travelVisible:     process.env.NEXT_PUBLIC_TRAVEL_VISIBLE      !== "false",
-  loveStoryVisible:  process.env.NEXT_PUBLIC_LOVE_STORY_VISIBLE  !== "false",
+  // ─── Client-accessible (NEXT_PUBLIC_) ────────────────────
+  rsvpOpen:         process.env.NEXT_PUBLIC_RSVP_OPEN          !== "false",
+  registryVisible:  process.env.NEXT_PUBLIC_REGISTRY_VISIBLE   !== "false",
+  travelVisible:    process.env.NEXT_PUBLIC_TRAVEL_VISIBLE      !== "false",
+  loveStoryVisible: process.env.NEXT_PUBLIC_LOVE_STORY_VISIBLE  !== "false",
   countdownEnabled:  process.env.NEXT_PUBLIC_COUNTDOWN_ENABLED   !== "false",
   countdownConfetti: process.env.NEXT_PUBLIC_COUNTDOWN_CONFETTI  !== "false",
 
-  // ─── Server-only (API routes / RSC only) ───────────────────────
-  // NOT exposed to the client bundle. Only read in src/lib/rsvp.ts.
-  backendDriver: (process.env.RSVP_BACKEND_DRIVER ?? "mock") as
-    "mock" | "supabase" | "airtable" | "google_sheets",
+  // Server-only flags live in src/config/flags.server.ts (imports "server-only").
 };

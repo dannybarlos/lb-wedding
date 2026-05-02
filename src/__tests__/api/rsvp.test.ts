@@ -1,20 +1,26 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { NextRequest } from "next/server";
+import { TEST_ANIMATIONS, TEST_RSVP, TEST_WEDDING } from "../fixtures/site-config.mock";
 
-// ─── Module mocks ─────────────────────────────────────────────────────────────────────────────────
+// ─── Module mocks ─────────────────────────────────────────────────────────────
 
 vi.mock("@/config/flags", () => ({
   FLAGS: {
     rsvpOpen: true,
+  },
+}));
+
+vi.mock("@/config/flags.server", () => ({
+  SERVER_FLAGS: {
     backendDriver: "mock",
   },
 }));
 
 vi.mock("@/config/site.config", () => ({
   SITE_CONFIG: {
-    rsvp: { mealOptions: ["Chicken", "Fish", "Vegetarian"] },
-    animations: { durations: { fast: 0.15, normal: 0.4, slow: 0.7 }, easings: { enter: [0,0,0,0], exit: [0,0,0,0] }, enabled: true, reducedMotion: "auto" },
-    wedding: { date: "2030-01-01T00:00:00" },
+    rsvp: TEST_RSVP,
+    animations: TEST_ANIMATIONS,
+    wedding: TEST_WEDDING,
   },
 }));
 
@@ -26,7 +32,7 @@ import { POST } from "@/app/api/rsvp/route";
 import { FLAGS } from "@/config/flags";
 import { submitRSVP } from "@/lib/rsvp";
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────────────────────
+// ─── Helpers ──────────────────────────────────────────────────────────────────
 
 const VALID_BODY = {
   fullName:     "Jane Smith",
@@ -55,7 +61,7 @@ beforeEach(async () => {
   vi.mocked(submitRSVP).mockResolvedValue(undefined);
 });
 
-// ─── Tests ──────────────────────────────────────────────────────────────────────────────────
+// ─── Tests ────────────────────────────────────────────────────────────────────
 
 describe("POST /api/rsvp", () => {
   it("returns 200 for a valid submission", async () => {

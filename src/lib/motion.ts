@@ -43,12 +43,6 @@ export const fadeInUp = (delay = 0) => ({
   transition: { delay, duration: durations.normal, ease: easings.enter },
 });
 
-export const fadeIn = (delay = 0) => ({
-  initial: { opacity: 0 },
-  animate: { opacity: 1 },
-  transition: { delay, duration: durations.normal, ease: easings.enter },
-});
-
 export const staggerContainer = {
   animate: { transition: { staggerChildren: 0.12 } },
 };

@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 import { renderHook, act } from "@testing-library/react";
+import { TEST_ANIMATIONS, TEST_RSVP, TEST_WEDDING } from "./fixtures/site-config.mock";
 
 // We need to control the target date independently of SITE_CONFIG,
 // so we expose calcCountdown as a named export for testing.
@@ -7,9 +8,9 @@ import { renderHook, act } from "@testing-library/react";
 
 vi.mock("@/config/site.config", () => ({
   SITE_CONFIG: {
-    wedding: { date: "2030-01-01T00:00:00" },
-    animations: { durations: { fast: 0.15, normal: 0.4, slow: 0.7 }, easings: { enter: [0, 0, 0, 0], exit: [0, 0, 0, 0] }, enabled: true, reducedMotion: "auto" },
-    rsvp: { mealOptions: ["Chicken", "Fish", "Vegetarian"] },
+    wedding: TEST_WEDDING,
+    animations: TEST_ANIMATIONS,
+    rsvp: TEST_RSVP,
   },
 }));
 

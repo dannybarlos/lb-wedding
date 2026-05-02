@@ -23,6 +23,6 @@ export function useConfetti(ref: React.RefObject<Element | null>) {
         colors: [...colors],
         shapes: [...shapes],
       });
-    });
+    }).catch(() => {});
   }, [isInView]);
 }

@@ -1,20 +1,14 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { TEST_ANIMATIONS, TEST_RSVP, TEST_COUPLE, TEST_WEDDING } from "./fixtures/site-config.mock";
 
 vi.mock("@/config/site.config", () => ({
   SITE_CONFIG: {
-    rsvp: {
-      heading: "will you join us?",
-      deadline: "June 1, 2027",
-      mealOptions: ["Chicken", "Fish", "Vegetarian"],
-      submitLabel: "Send RSVP",
-      successMessage: "We can't wait to celebrate with you! 🎉",
-      errorMessage: "Something went wrong. Please try again or email us directly.",
-    },
-    animations: { durations: { fast: 0.15, normal: 0.4, slow: 0.7 }, easings: { enter: [0,0,0,0], exit: [0,0,0,0] }, enabled: false, reducedMotion: "always" },
-    wedding: { date: "2030-01-01T00:00:00" },
-    couple: { monogram: "L & B", name1: "Laurice", name2: "Bernie", hashtag: "" },
+    rsvp: TEST_RSVP,
+    animations: TEST_ANIMATIONS,
+    wedding: TEST_WEDDING,
+    couple: TEST_COUPLE,
   },
 }));
 
@@ -38,7 +32,7 @@ vi.mock("framer-motion", () => ({
 
 import RSVPPage from "@/app/rsvp/page";
 
-// ─── fetch mock ─────────────────────────────────────────────────────────────────────────────────
+// ─── fetch mock ───────────────────────────────────────────────────────────────
 
 function mockFetch(status: number, body: object) {
   global.fetch = vi.fn().mockResolvedValueOnce(
@@ -46,7 +40,7 @@ function mockFetch(status: number, body: object) {
   );
 }
 
-// ─── Tests ──────────────────────────────────────────────────────────────────────────────────
+// ─── Tests ────────────────────────────────────────────────────────────────────
 
 describe("RSVPPage", () => {
   beforeEach(() => {
@@ -144,6 +138,34 @@ describe("RSVPPage", () => {
 
     await waitFor(() => {
       expect(screen.getByText(/too many attempts/i)).toBeInTheDocument();
+    });
+  });
+
+  it("shows error banner when fetch rejects (network error)", async () => {
+    global.fetch = vi.fn().mockRejectedValueOnce(new Error("Network error"));
+    const user = userEvent.setup();
+    render(<RSVPPage />);
+
+    await user.type(screen.getByPlaceholderText("Jane Smith"), "Jane Smith");
+    await user.type(screen.getByPlaceholderText("you@example.com"), "jane@example.com");
+    await user.click(screen.getByRole("button", { name: /send rsvp/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText(/something went wrong/i)).toBeInTheDocument();
+    });
+  });
+
+  it("shows 'RSVP is now closed' message on 423 response (rsvpOpen=true, server closed)", async () => {
+    mockFetch(423, { error: "RSVP is closed" });
+    const user = userEvent.setup();
+    render(<RSVPPage />);
+
+    await user.type(screen.getByPlaceholderText("Jane Smith"), "Jane Smith");
+    await user.type(screen.getByPlaceholderText("you@example.com"), "jane@example.com");
+    await user.click(screen.getByRole("button", { name: /send rsvp/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText(/rsvp is now closed/i)).toBeInTheDocument();
     });
   });
 

@@ -1,10 +1,11 @@
 import { describe, it, expect, vi } from "vitest";
+import { TEST_ANIMATIONS, TEST_RSVP, TEST_WEDDING } from "./fixtures/site-config.mock";
 
 vi.mock("@/config/site.config", () => ({
   SITE_CONFIG: {
-    rsvp: { mealOptions: ["Chicken", "Fish", "Vegetarian"] },
-    animations: { durations: { fast: 0.15, normal: 0.4, slow: 0.7 }, easings: { enter: [0,0,0,0], exit: [0,0,0,0] }, enabled: true, reducedMotion: "auto" },
-    wedding: { date: "2030-01-01T00:00:00" },
+    rsvp: TEST_RSVP,
+    animations: TEST_ANIMATIONS,
+    wedding: TEST_WEDDING,
   },
 }));
 
@@ -21,7 +22,7 @@ const VALID: Parameters<typeof RSVPSchema.parse>[0] = {
 };
 
 describe("RSVPSchema", () => {
-  // ─── fullName ─────────────────────────────────────────────────────────
+  // ─── fullName ───────────────────────────────────────────────
 
   it("accepts a valid full name", () => {
     expect(RSVPSchema.safeParse(VALID).success).toBe(true);
@@ -47,7 +48,7 @@ describe("RSVPSchema", () => {
     expect(r.success).toBe(true);
   });
 
-  // ─── email ───────────────────────────────────────────────────────────
+  // ─── email ──────────────────────────────────────────────────
 
   it("rejects 'foo' as email", () => {
     expect(RSVPSchema.safeParse({ ...VALID, email: "foo" }).success).toBe(false);
@@ -69,7 +70,7 @@ describe("RSVPSchema", () => {
     expect(RSVPSchema.safeParse({ ...VALID, email: "foo@bar.co.uk" }).success).toBe(true);
   });
 
-  // ─── guestCount ────────────────────────────────────────────────────────────
+  // ─── guestCount ─────────────────────────────────────────────
 
   it("rejects guestCount=0", () => {
     expect(RSVPSchema.safeParse({ ...VALID, guestCount: 0 }).success).toBe(false);
@@ -83,7 +84,7 @@ describe("RSVPSchema", () => {
     expect(RSVPSchema.safeParse({ ...VALID, guestCount: 5 }).success).toBe(true);
   });
 
-  // ─── mealChoice ────────────────────────────────────────────────────────────
+  // ─── mealChoice ─────────────────────────────────────────────
 
   it("accepts a valid meal option", () => {
     expect(RSVPSchema.safeParse({ ...VALID, mealChoice: "Fish" }).success).toBe(true);
@@ -97,7 +98,7 @@ describe("RSVPSchema", () => {
     expect(RSVPSchema.safeParse({ ...VALID, attending: "no", mealChoice: "" }).success).toBe(true);
   });
 
-  // ─── optional fields ──────────────────────────────────────────────────────────────
+  // ─── optional fields ─────────────────────────────────────────
 
   it("accepts empty songRequest", () => {
     expect(RSVPSchema.safeParse({ ...VALID, songRequest: "" }).success).toBe(true);

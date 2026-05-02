@@ -36,6 +36,9 @@ export default function Hero() {
               <img
                 src={photo.src}
                 alt={photo.alt}
+                width={560}
+                height={280}
+                fetchPriority={i === 0 ? "high" : "auto"}
                 className="w-full h-full object-cover"
                 onError={(e) => {
                   const img = e.currentTarget;

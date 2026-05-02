@@ -9,7 +9,10 @@ export const runtime = "nodejs";
 
 /**
  * Simple in-memory rate limiter: 3 submissions per IP per hour.
- * Resets on cold starts — acceptable for a low-traffic wedding site.
+ *
+ * PER-INSTANCE WARNING: This Map lives in Node.js module memory. Each
+ * serverless instance has its own copy, so a user could bypass the limit
+ * by hitting different instances. Acceptable for a low-traffic wedding site.
  * For multi-instance / multi-region production, replace with Vercel KV:
  * https://vercel.com/docs/storage/vercel-kv
  */
@@ -18,6 +21,12 @@ const ipHits = new Map<string, { count: number; resetAt: number }>();
 
 function isRateLimited(ip: string): boolean {
   const now = Date.now();
+
+  // Prune expired entries to prevent unbounded memory growth.
+  for (const [key, rec] of ipHits) {
+    if (now > rec.resetAt) ipHits.delete(key);
+  }
+
   const record = ipHits.get(ip);
   if (!record || now > record.resetAt) {
     ipHits.set(ip, { count: 1, resetAt: now + RATE_LIMIT.windowMs });

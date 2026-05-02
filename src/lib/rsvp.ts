@@ -1,10 +1,10 @@
-import { FLAGS } from "@/config/flags";
+import { SERVER_FLAGS } from "@/config/flags.server";
 import type { RSVPFormData } from "@/lib/rsvpSchema";
 
 export type { RSVPFormData };
 
 export async function submitRSVP(data: RSVPFormData): Promise<void> {
-  const driver = FLAGS.backendDriver;
+  const driver = SERVER_FLAGS.backendDriver;
 
   if (driver === "mock") {
     await new Promise((resolve) => setTimeout(resolve, 800));
@@ -13,15 +13,12 @@ export async function submitRSVP(data: RSVPFormData): Promise<void> {
   }
 
   if (driver === "supabase") {
-    // Requires: npm install @supabase/supabase-js
-    // Env vars: SUPABASE_URL, SUPABASE_ANON_KEY
-    // Dynamic import via Function() to keep supabase out of the static bundle.
-    // eslint-disable-next-line no-new-func
-    const { createClient } = await new Function("pkg", "return import(pkg)")("@supabase/supabase-js");
-    const supabase = createClient(process.env.SUPABASE_URL!, process.env.SUPABASE_ANON_KEY!);
-    const { error } = await supabase.from("rsvps").insert([data]);
-    if (error) throw new Error(error.message);
-    return;
+    // To enable: npm install @supabase/supabase-js, then replace this stub
+    // with: const { createClient } = await import("@supabase/supabase-js");
+    // Env vars required: SUPABASE_URL, SUPABASE_ANON_KEY
+    throw new Error(
+      "Supabase driver is not installed. Run: npm install @supabase/supabase-js"
+    );
   }
 
   if (driver === "airtable") {

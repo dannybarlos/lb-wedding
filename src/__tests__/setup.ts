@@ -1,6 +1,9 @@
 import "@testing-library/jest-dom";
 import { vi } from "vitest";
 
+// server-only throws in non-server environments; stub it for all tests.
+vi.mock("server-only", () => ({}));
+
 // next/font/google returns CSS variable names; stub it so components import cleanly.
 vi.mock("next/font/google", () => ({
   Playfair_Display: () => ({ variable: "--font-serif", className: "playfair" }),

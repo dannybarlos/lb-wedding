@@ -26,6 +26,7 @@ export const metadata: Metadata = {
     title: `${SITE_CONFIG.couple.monogram} — ${SITE_CONFIG.wedding.displayDate}`,
     description: `You're cordially invited to celebrate the wedding of ${SITE_CONFIG.couple.name1} & ${SITE_CONFIG.couple.name2}.`,
     type: "website",
+    images: [{ url: "/images/venue-illustration.png", width: 1200, height: 630 }],
   },
 };
 
